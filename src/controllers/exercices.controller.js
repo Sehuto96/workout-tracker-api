@@ -192,6 +192,29 @@ const partialUpdateExercise = (req, res) => {
             });
     }
 };
+
+const deleteExercise = (req, res) => {
+    try {
+        const { id } = req.params;
+        const idx = exercises.findIndex((e) => e.id === id);
+        if (idx === -1) {
+            return res
+                .status(404)
+                .json({ success: false, error: "Ejercicio no encontrado" });
+        }
+        const deleted = exercises.splice(idx, 1)[0];
+        return res
+            .status(200)
+            .json({ success: true, message: "Ejercicio eliminado", data: deleted });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: "Error al eliminar ejercicio",
+            message: error.message,
+        });
+    }
+};
+
 };
     module.exports = {  
         getAllExercises,
