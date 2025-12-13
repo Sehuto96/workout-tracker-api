@@ -25,24 +25,48 @@ createdAt: '2025-09-13T12:00:00Z'
 // */
 const getAllUsers = (req, res) => {
  try {
- const { role, search } = req.query;
+ const { role, search, limit } = req.query;
+
+//   Validar límite
+ const validLimit = Math.min(parseInt(limit) || 100, 100);
+
+//   Validar rol si se proporciona
+ const validRoles = ['admin', 'user'];
+ if (role && !validRoles.includes(role)) {
+ return res.status(400).json({
+ success: false,
+ error: 'role debe ser uno de: ${validRoles.join(",")}',
+ });
+ }
 
  let result = users;
 
  if (role) {
  result = result.filter(u => u.role === role);
  }
+// Haz el commit:
+// ✅ Commit 6 completado
+// COMMIT 7: Actualizar documentación
+// Archivos a modificar:
 
  if (search) {
- result = result.filter(u =>
- u.name.toLowerCase().includes(search.toLowerCase())
- );
+ if (search.length < 1) {
+ return res.status(400).json({
+ success: false,
+ error: 'search debe tener al menos 1 carácter'
+ });
  }
+ result = result.filter(u => u.name.toLowerCase().includes(search.toLowerCase()));
+ }
+
+ result = result.slice(0, validLimit);
 
  res.status(200).json({
  success: true,
  data: result,
- total: result.length
+ total: result.length,
+ filters: { role, search, limit: validLimit },
+ timestamp: new Date().toISOString()
  });
  } catch (error) {
  res.status(500).json({
