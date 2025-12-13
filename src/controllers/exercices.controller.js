@@ -81,8 +81,24 @@ const getExerciseById = (req, res) => {
     }
 };
 
-// Exportar funciones
-module.exports = {
-    getAllExercises,
-    getExerciseById
+const createExercise = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: POST /exercises' });
 };
+const updateExercise = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: PUT /exercises/:id' });
+};
+const partialUpdateExercise = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: PATCH /exercises/:id' });
+};
+const deleteExercise = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: DELETE /exercises/:id' });
+};
+module.exports = {
+getAllExercises,
+getExerciseById,
+createExercise,
+updateExercise,
+partialUpdateExercise,
+deleteExercise
+};
+
