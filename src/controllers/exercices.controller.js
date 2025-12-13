@@ -109,20 +109,40 @@ const createExercise = (req, res) => {
         return res.status(500).json({ success: false, error: 'Error al crear ejercicio', message: error.message });
     };
 
-    const createExercise = (req, res) => {
-        return res.status(501).json({ success: false, error: 'TODO: POST /exercises' });
-    };
-    const updateExercise = (req, res) => {
-        return res.status(501).json({ success: false, error: 'TODO: PUT /exercises/:id' });
-    };
-    const partialUpdateExercise = (req, res) => {
-        return res.status(501).json({ success: false, error: 'TODO: PATCH /exercises/:id' });
-    };
-    const deleteExercise = (req, res) => {
-        return res.status(501).json({ success: false, error: 'TODO: DELETE /exercises/:id' });
-    };
 
+};
+const partialUpdateExercise = (req, res) => {
+    return res.status(501).json({ success: false, error: 'TODO: PATCH /exercises/:id' });
+};
+const deleteExercise = (req, res) => {
+    return res.status(501).json({ success: false, error: 'TODO: DELETE /exercises/:id' });
+};
 
+const updateExercise = (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, category, muscleGroup } = req.body;
+        if (!name || !description || !category || !muscleGroup) {
+            return res.status(400).json({
+                success: false,
+                error: 'name, description, category y muscleGroup son requeridos'
+            });
+        }
+        const idx = exercises.findIndex(e => e.id === id);
+        if (idx === -1) {
+            return res.status(404).json({ success: false, error: 'Ejercicio no encontrado' });
+        }
+        exercises[idx] = {
+            ...exercises[idx],
+            name: String(name).trim(),
+            description: String(description).trim(),
+            category: String(category).trim(),
+            muscleGroup: String(muscleGroup).trim()
+        };
+        return res.status(200).json({ success: true, message: 'Ejercicio actualizado', data: exercises[idx] });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: 'Error al actualizar ejercicio', message: error.message });
+    };
 
     module.exports = {
         getAllExercises,
@@ -131,5 +151,4 @@ const createExercise = (req, res) => {
         updateExercise,
         partialUpdateExercise,
         deleteExercise
-    };
-
+    }};
