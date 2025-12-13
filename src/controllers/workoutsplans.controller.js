@@ -185,20 +185,29 @@ const partialUpdateWorkoutPlan = (req, res) => {
 };
 
 const deleteWorkoutPlan = (req, res) => {
-    return res.status(501).json({ success: false, error: 'TODO: DELETE /workoutplans/:id' });
+    try {
+        const { id } = req.params;
+        const idx = workoutPlans.findIndex(p => p.id === id);
+
+        if (idx === -1) {
+            return res.status(404).json({ success: false, error: 'Workout plan no encontrado' });
+        }
+
+        const deleted = workoutPlans.splice(idx, 1)[0];
+
+        return res.status(200).json({
+            success: true,
+            message: 'Workout plan eliminado exitosamente',
+            data: { id: deleted.id, title: deleted.title, userId: deleted.userId }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: 'Error al eliminar workout plan',
+            message: error.message
+        });
+    }
 };
-
-function isValidExerciseItem(item) {
-return item &&
-typeof item.exerciseId === 'string' &&
-typeof item.name === 'string' &&
-Number.isFinite(Number(item.sets)) && Number(item.sets) > 0 &&
-Number.isFinite(Number(item.reps)) && Number(item.reps) > 0 &&
-Number.isFinite(Number(item.weight)) && Number(item.weight) >= 0 &&
-typeof item.notes === 'string';
-}
-
-
 
 module.exports = {
     getAllWorkoutPlans,
@@ -206,5 +215,10 @@ module.exports = {
     createWorkoutPlan,
     updateWorkoutPlan,
     partialUpdateWorkoutPlan,
-    deleteWorkoutPlan,
+    deleteWorkoutPlan
 };
+
+
+
+
+
