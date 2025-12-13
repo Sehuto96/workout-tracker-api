@@ -93,10 +93,45 @@ const createWorkoutPlan = (req, res) => {
     }
 };
 
-
 const updateWorkoutPlan = (req, res) => {
-    return res.status(501).json({ success: false, error: 'TODO: PUT /workoutplans/:id' });
+    try {
+        const { id } = req.params;
+        const { userId, title, description, exercises } = req.body;
+        if (!userId || !title || !description || !Array.isArray(exercises)) {
+            return res.status(400).json({ success: false, error: 'userId, title, description y exercises son requeridos' });
+        }
+        for (const it of exercises) {
+            if (!isValidExerciseItem(it)) {
+                return res.status(400).json({ success: false, error: 'Cada ejercicio debe tener exerciseId, name, sets, reps, weight y notes válidos' });
+            }
+        }
+        const idx = workoutPlans.findIndex(p => p.id === id);
+        if (idx === -1) {
+            return res.status(404).json({ success: false, error: 'Workout plan no encontrado' });
+        }
+        const now = new Date().toISOString();
+        workoutPlans[idx] = {
+            ...workoutPlans[idx],
+            userId: String(userId).trim(),
+            title: String(title).trim(),
+            description: String(description).trim(),
+            updatedAt: now,
+            exercises: exercises.map(e => ({
+                exerciseId: String(e.exerciseId).trim(),
+                name: String(e.name).trim(),
+                sets: Number(e.sets),
+                reps: Number(e.reps),
+                weight: Number(e.weight),
+                notes: String(e.notes)
+            }))
+        };
+        return res.status(200).json({ success: true, message: 'Workout plan actualizado', data: workoutPlans[idx] });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: 'Error al actualizar workout plan', message: error.message });
+    }
 };
+
+
 const partialUpdateWorkoutPlan = (req, res) => {
     return res.status(501).json({ success: false, error: 'TODO: PATCH /workoutplans/:id' });
 };
