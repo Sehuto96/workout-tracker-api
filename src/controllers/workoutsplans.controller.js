@@ -131,10 +131,59 @@ const updateWorkoutPlan = (req, res) => {
     }
 };
 
-
 const partialUpdateWorkoutPlan = (req, res) => {
-    return res.status(501).json({ success: false, error: 'TODO: PATCH /workoutplans/:id' });
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) {
+            return res.status(400).json({ success: false, error: 'Debes proporcionar al menos un campo para actualizar' });
+        }
+
+        const idx = workoutPlans.findIndex(p => p.id === id);
+        if (idx === -1) {
+            return res.status(404).json({ success: false, error: 'Workout plan no encontrado' });
+        }
+
+        const now = new Date().toISOString();
+        const plan = workoutPlans[idx];
+        const sanitized = {};
+
+        if (updates.userId) sanitized.userId = String(updates.userId).trim();
+        if (updates.title) sanitized.title = String(updates.title).trim();
+        if (updates.description) sanitized.description = String(updates.description).trim();
+
+        if (updates.exercises) {
+            if (!Array.isArray(updates.exercises)) {
+                return res.status(400).json({ success: false, error: 'exercises debe ser un array' });
+            }
+            for (const it of updates.exercises) {
+                if (!isValidExerciseItem(it)) {
+                    return res.status(400).json({ success: false, error: 'Cada ejercicio debe tener exerciseId, name, sets, reps, weight y notes válidos' });
+                }
+            }
+            sanitized.exercises = updates.exercises.map(e => ({
+                exerciseId: String(e.exerciseId).trim(),
+                name: String(e.name).trim(),
+                sets: Number(e.sets),
+                reps: Number(e.reps),
+                weight: Number(e.weight),
+                notes: String(e.notes)
+            }));
+        }
+
+        workoutPlans[idx] = {
+            ...plan,
+            ...sanitized,
+            updatedAt: now
+        };
+
+        return res.status(200).json({ success: true, message: 'Workout plan actualizado parcialmente', data: workoutPlans[idx] });
+    } catch (error) {
+        return res.status(500).json({ success: false, error: 'Error al actualizar parcialmente', message: error.message });
+    }
 };
+
 const deleteWorkoutPlan = (req, res) => {
     return res.status(501).json({ success: false, error: 'TODO: DELETE /workoutplans/:id' });
 };
