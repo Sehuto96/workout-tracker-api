@@ -2,9 +2,18 @@ const express = require('express');
 const {
 getAllWorkoutPlans,
 getWorkoutPlanById,
+createWorkoutPlan,
+updateWorkoutPlan,
+partialUpdateWorkoutPlan,
+deleteWorkoutPlan,
 } = require('../../controllers/workoutplans.controller');
 const router = express.Router();
-// RUTAS GET (solo estas por ahora)
+// GET
 router.get('/', getAllWorkoutPlans);
 router.get('/:id', getWorkoutPlanById);
+// Declaración de rutas futuras
+router.post('/', createWorkoutPlan);
+router.put('/:id', updateWorkoutPlan);
+router.patch('/:id', partialUpdateWorkoutPlan);
+router.delete('/:id', deleteWorkoutPlan);
 module.exports = router;

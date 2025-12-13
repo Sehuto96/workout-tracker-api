@@ -56,7 +56,23 @@ const getWorkoutPlanById = (req, res) => {
     }
 };
 
-    module.exports = {
-        getAllWorkoutPlans,
-        getWorkoutPlanById,
-    };
+const createWorkoutPlan = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: POST /workoutplans' });
+};
+const updateWorkoutPlan = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: PUT /workoutplans/:id' });
+};
+const partialUpdateWorkoutPlan = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: PATCH /workoutplans/:id' });
+};
+const deleteWorkoutPlan = (req, res) => {
+return res.status(501).json({ success: false, error: 'TODO: DELETE /workoutplans/:id' });
+};
+module.exports = {
+getAllWorkoutPlans,
+getWorkoutPlanById,
+createWorkoutPlan,
+updateWorkoutPlan,
+partialUpdateWorkoutPlan,
+deleteWorkoutPlan,
+};
