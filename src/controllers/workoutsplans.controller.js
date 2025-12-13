@@ -30,8 +30,33 @@ const getAllWorkoutPlans = (req, res) => {
     }
 };
 
+// Obtener plan por ID
+const getWorkoutPlanById = (req, res) => {
+    try {
+        const { id } = req.params;
+        const plan = workoutPlans.find(p => p.id === id);
 
-module.exports = {
-    getAllWorkoutPlans,
-    getWorkoutPlanById,
+        if (!plan) {
+            return res.status(404).json({
+                success: false,
+                error: 'Workout plan no encontrado'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: plan
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: 'Error al obtener workout plan',
+            message: error.message
+        });
+    }
 };
+
+    module.exports = {
+        getAllWorkoutPlans,
+        getWorkoutPlanById,
+    };
