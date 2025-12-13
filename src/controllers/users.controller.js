@@ -138,9 +138,108 @@ const createUser = (req, res) => {
  });
  }
 };
+
+// CONTROLADOR: UPDATE USER (PUT)
+
+const updateUser = (req, res) => {
+ try {
+ const { id } = req.params;
+ const { name, email, role } = req.body;
+
+ if (!name || !email || !role) {
+ return res.status(400).json({
+ success: false,
+ error: 'name, email y role son requeridos'
+ });
+ }
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ if (!emailRegex.test(email)) {
+ return res.status(400).json({
+ success: false,
+ error: 'El email no tiene un formato válido'
+ });
+ }
+
+ const index = users.findIndex(u => u.id === id);
+
+ if (index === -1) {
+ return res.status(404).json({
+ success: false,
+ error: 'Usuario no encontrado'
+ });
+ }
+
+ users[index] = {
+  ...users[index],
+ name: name.trim(),
+ email: email.toLowerCase(),
+ role
+ };
+
+ res.status(200).json({
+ success: true,
+ message: 'Usuario actualizado exitosamente',
+ data: users[index]
+ });
+ } catch (error) {
+ res.status(500).json({
+ success: false,
+ error: 'Error al actualizar usuario',
+ message: error.message
+ });
+ }
+};
+
+//  CONTROLADOR: PARTIAL UPDATE (PATCH)
+
+const partialUpdateUser = (req, res) => {
+ try {
+ const { id } = req.params;
+const updates = req.body;
+
+ if (Object.keys(updates).length === 0) {
+ return res.status(400).json({
+ success: false,
+ error: 'Debes proporcionar al menos un campo para actualizar'
+ });
+ }
+
+ const index = users.findIndex(u => u.id === id);
+
+ if (index === -1) {
+ return res.status(404).json({
+ success: false,
+ error: 'Usuario no encontrado'
+ });
+ }
+
+ if (updates.name) {
+ updates.name = updates.name.trim();
+ }
+
+ users[index] = {
+  ...users[index],
+  ...updates
+ };
+
+ res.status(200).json({
+ success: true,
+ message: 'Usuario actualizado parcialmente',
+ data: users[index]
+ });
+ } catch (error) {
+ res.status(500).json({
+ success: false,
+ error: 'Error al actualizar usuario',
+ message: error.message
+ });
+ }
+};
 module.exports = {
  getAllUsers,
  getUserById,
- createUser
+ createUser,
+ updateUser,
+ partialUpdateUser
 };
 

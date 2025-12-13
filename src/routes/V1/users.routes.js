@@ -3,7 +3,9 @@ const express = require('express');
 const {
   getAllUsers,
   getUserById,
-  createUser
+  createUser,
+  updateUser,
+  partialUpdateUser
 } = require('../../controllers/users.controller');
 const router = express.Router();
 
@@ -15,5 +17,19 @@ router.get('/:id', getUserById);
 // * POST /api/v1/users
 // * Crear un nuevo usuario
 router.post('/', createUser);
+
+// RUTAS PUT Y PATCH
+
+// /
+// * PUT /api/v1/users/:id
+// * Actualizar usuario completamente
+// */
+router.put('/:id', updateUser);
+
+// /
+// * PATCH /api/v1/users/:id
+// * Actualizar usuario parcialmente
+// */
+router.patch('/:id', partialUpdateUser);
 
 module.exports = router;
