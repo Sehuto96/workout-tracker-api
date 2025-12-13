@@ -235,11 +235,48 @@ const updates = req.body;
  });
  }
 };
+
+// CONTROLADOR: DELETE USER
+
+const deleteUser = (req, res) => {
+ try {
+ const { id } = req.params;
+
+ const index = users.findIndex(u => u.id === id);
+ if (index === -1) {
+ return res.status(404).json({
+ success: false,
+ error: 'Usuario no encontrado'
+ });
+ }
+
+ const deletedUser = users.splice(index, 1)[0];
+
+ res.status(200).json({
+ success: true,
+ message: 'Usuario eliminado exitosamente',
+ data: {
+ id: deletedUser.id,
+ name: deletedUser.name,
+ email: deletedUser.email
+ }
+ });
+ } catch (error) {
+ res.status(500).json({
+ success: false,
+ error: 'Error al eliminar usuario',
+ message: error.message
+ });
+ }
+};
 module.exports = {
  getAllUsers,
  getUserById,
  createUser,
  updateUser,
- partialUpdateUser
-};
+ partialUpdateUser,
+ deleteUser
+}
+
+
 
