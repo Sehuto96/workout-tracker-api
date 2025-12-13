@@ -108,12 +108,8 @@ const createExercise = (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, error: 'Error al crear ejercicio', message: error.message });
     };
-
-
 };
-const partialUpdateExercise = (req, res) => {
-    return res.status(501).json({ success: false, error: 'TODO: PATCH /exercises/:id' });
-};
+
 const deleteExercise = (req, res) => {
     return res.status(501).json({ success: false, error: 'TODO: DELETE /exercises/:id' });
 };
@@ -144,11 +140,64 @@ const updateExercise = (req, res) => {
         return res.status(500).json({ success: false, error: 'Error al actualizar ejercicio', message: error.message });
     };
 
-    module.exports = {
+// Actualización parcial (PATCH)
+const partialUpdateExercise = (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        if (
+            !updates ||
+            typeof updates !== "object" ||
+            Object.keys(updates).length === 0
+        ) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    error: "Debes proporcionar al menos un campo para actualizar",
+                });
+        }
+
+        const idx = exercises.findIndex((e) => e.id === id);
+        if (idx === -1) {
+            return res
+                .status(404)
+                .json({ success: false, error: "Ejercicio no encontrado" });
+        }
+
+        // Normalizamos los valores
+        for (let key in updates) {
+            if (typeof updates[key] === "string") {
+                updates[key] = updates[key].trim();
+            }
+        }
+
+        exercises[idx] = { ...exercises[idx], ...updates };
+
+        return res
+            .status(200)
+            .json({
+                success: true,
+                message: "Ejercicio actualizado parcialmente",
+                data: exercises[idx],
+            });
+    } catch (error) {
+        return res
+            .status(500)
+            .json({
+                success: false,
+                error: "Error al actualizar parcialmente",
+                message: error.message,
+            });
+    }
+};
+};
+    module.exports = {  
         getAllExercises,
         getExerciseById,
         createExercise,
         updateExercise,
         partialUpdateExercise,
         deleteExercise
-    }};
+    };
