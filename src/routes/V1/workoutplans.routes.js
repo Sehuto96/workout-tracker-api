@@ -6,7 +6,7 @@ createWorkoutPlan,
 updateWorkoutPlan,
 partialUpdateWorkoutPlan,
 deleteWorkoutPlan,
-} = require('../../controllers/workoutplans.controller');
+} = require('../../controllers/workoutsplans.controller');
 const router = express.Router();
 // GET
 router.get('/', getAllWorkoutPlans);
@@ -16,4 +16,4 @@ router.post('/', createWorkoutPlan);
 router.put('/:id', updateWorkoutPlan);
 router.patch('/:id', partialUpdateWorkoutPlan);
 router.delete('/:id', deleteWorkoutPlan);
-module.exports = router;
+module.exports = router;    
